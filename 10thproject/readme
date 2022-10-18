@@ -1,0 +1,18 @@
+first install all the libraries using command
+pip install -r requirements.txt
+
+Then run the gather data file 
+using command
+python gather_data.py
+
+This file will capture 30 images of the face and save it in dataset with the specified id.
+
+then run the face trainer file
+using command
+python face_trainer.py
+
+this program will train the model and save the data in trainer folder (trainer.yml file)
+
+and finally run 
+main.py using command
+python main.py
