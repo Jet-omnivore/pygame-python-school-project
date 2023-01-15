@@ -1,5 +1,7 @@
 import pickle
 import os
+from prettytable import PrettyTable
+import csv
 
 # will be used as index to access values in data
 FILENAME =  "gym_file.dat"
@@ -22,8 +24,38 @@ MAIN_USER_NAME      =  0
 MAIN_USER_PASSWORD  =  1
 access_granted      =  False
 
-def add_user(name, age, salary):
-    users_data['users'].append([name, age, salary])  
+def print_offseted_table(table_string, offset):
+    row = ' ' * offset
+    for char in table_string:
+        if char == '\n':
+            print(row) 
+            row = ' ' * offset
+            continue
+        row += char
+    print(row)
+
+def load_diet_chart(filename):
+    diet_table = PrettyTable()
+    diet_table.left_padding_width = 0
+    with open(filename) as file:
+        reader = csv.reader(file, delimiter='*')
+        for i in reader:
+            if reader.line_num == 1:
+                diet_table.field_names = list(i)
+            else:
+                diet_table.add_row(i)
+    return diet_table
+
+diet_chart = load_diet_chart('diet_chart.txt')
+
+def print_diet_chart():
+    os.system('cls')
+    print('\n' * 2)
+    print_offseted_table(diet_chart.get_string(), 2)
+    print('\n' * 2)
+
+def add_user(*args):
+    users_data['users'].append(list(args))  
 
 def remove_user(name):
     users = users_data['users']
@@ -33,13 +65,16 @@ def remove_user(name):
             return True
     return False
 
-def update_user_data(old_name, new_name, new_age, new_salary):
+def update_user_data(name, new_age, new_height, new_weight):
     users = users_data['users']
     for i in range(len(users)):
-        if users[i][0] == old_name:
+        if users[i][0] == name:
             new_age     = (new_age    + 1 or users[i][1] + 1) - 1
-            new_salary  = (new_salary + 1 or users[i][2] + 1) - 1
-            users[i] = [new_name, new_age, new_salary]
+            new_height  = (new_age    + 1 or users[i][2] + 1) - 1
+            new_weight  = (new_age    + 1 or users[i][2] + 1) - 1
+            users[i][1]    = new_age
+            users[i][3]    = new_height
+            users[i][4]    = new_weight
             return True
     return False
 
@@ -76,25 +111,45 @@ def main_sys():
         print("                                         4. Show Users️                                            ")
         print("                                         5. Change Your Password 🔐                                 ")
         print("                                         6. Change Your Registered Name 🆔                          ") 
-        print("                                         7. Exit 👋                                                 ") 
+        print("                                         7. View Diet Chart                                         ") 
+        print("                                         8. Exit 👋                                                 ") 
 
         user_input = input() 
             
         if user_input == '1':
-            new_user_name       =    input("         Enter New User Name         :   ") 
+            name       =    input("         Enter Member's Name                                             :   ") 
+            while name == '':
+                name   =    input("         Name Can't be Empty                                             :   ")
 
-            new_user_age        =    input("         Enter New User Age          :   ")
-            while not (convertable_to_int(new_user_age) and int(new_user_age) > 0):
-                new_user_age    =    input("         Enter Valid New User Age    :   ")
-            new_user_age        =    int(new_user_age)
+            age        =    input("         Enter Member's Age ( > 14)                                      :   ")
+            while not (convertable_to_int(age) and int(age) > 14):
+                age    =    input("         Enter Valid Member's Age                                        :   ")
+            age        =    int(age)
 
-            new_user_salary     =    input("         Enter New User salary       :   ")
-            while not (convertable_to_int(new_user_salary) and int(new_user_salary) > 0):
-                new_user_salary =    input("         Enter Valid New User salary :   ")
+            height     =    input("         Enter Member's height (in cms)                                  :   ")
+            while not (convertable_to_int(height) and int(height) > 0):
+                height =    input("         Enter Valid Member's height                                     :   ")
+            height     =    int(height)
 
-            new_user_salary     =    int(new_user_salary)
+            weight     =    input("         Enter Member's weight (in kgs)                                  :   ")
+            while not (convertable_to_int(weight) and int(weight) > 0):
+                weight =    input("         Enter Valid Member's weight                                     :   ")
+            weight     =    int(weight)
+            
+            gender     =    input("         Enter Member's Gender                                           :   ")
 
-            add_user(new_user_name, new_user_age, new_user_salary)
+            # date of joining -> doj
+            doj        =    input("         Enter Date of Joining                                           :   ")
+            motive     =    input("         Enter the motive of member to join (Gaining / Leaning)          :   ").lower()[0]
+
+            add_user(name,              # 0
+                     age,               # 1
+                     doj,               # 2
+                     height,            # 3
+                     weight,            # 4
+                     gender,            # 5
+                     motive             # 6
+                     )
             prev_msgs.append("Successfully Added New User")
 
         elif user_input == '2':
@@ -105,34 +160,49 @@ def main_sys():
                 prev_msgs.append("User Doesn't exist")
 
         elif user_input == '3':
-            user_name           =    input("         Enter the user name         :   ")
-            new_user_name       =    input("         Enter User's New Name       :   ") 
+            member_name           =    input("         Enter the member name           :   ")
+            while member_name == '':
+                member_name       =    input("         Name Can't be Empty             :   ")
 
-            new_user_age        =    input("         Enter User's New Age        :   ") or -1
-            while not convertable_to_int(new_user_age):
-                new_user_age    =    input("         Enter Valid User Age        :   ")
-            new_user_age        =    int(new_user_age)
+            member_new_age        =    input("         Enter Members's New Age         :   ") or -1
+            while not convertable_to_int(member_new_age):
+                member_new_age    =    input("         Enter Valid Age                 :   ")
+            member_new_age        =    int(member_new_age)
 
-            new_user_salary     =    input("         Enter User's New salary     :   ") or -1
-            while not convertable_to_int(new_user_salary):
-                new_user_salary =    input("         Enter Valid User salary     :   ")
-            new_user_salary     =    int(new_user_salary)
+            member_new_height     =    input("         Enter Member's New Height       :   ") or -1
+            while not convertable_to_int(member_new_height):
+                member_new_height =    input("         Enter Valid Height              :   ")
+            member_new_height     =    int(member_new_height)
 
-            if update_user_data(user_name, new_user_name, new_user_age, new_user_salary):
+            member_new_weight     =    input("         Enter Member's New Weight       :   ") or -1
+            while not convertable_to_int(member_new_weight):
+                member_new_weight =    input("         Enter Valid Weight              :   ")
+            member_new_weight     =    int(member_new_weight)
+
+            if update_user_data(member_name, member_new_age, member_new_height, member_new_weight):
                 prev_msgs.append("Successfully Updated")
             else:
                 prev_msgs.append("User Doesn't Exist")
 
         elif user_input == '4':
-            print('''
-                             ____________________________________________________________________________________
-                            |____________________________________________________________________________________|
-                            |          NAME            |           AGE                |          SALARY          |
-                            |__________________________|______________________________|__________________________|
-                            |                          |                              |                          |  ''')
+            headers = ['NAME', 'AGE', 'DATE OF JOINING', 'HEIGHT', 'WEIGHT', 'GENDER']
+            users_table = PrettyTable(headers)
+
             for user in users_data['users']:
-                print(' '*27 ,'|' + ' ' * 8 , user[0], ' ' * (15 - len(user[0])), '|' + ' ' * 10, user[1], ' ' * (17 - len(str(user[1]))), '|' + ' ' * 10, user[2], ' ' * (13 - len(str(user[2]))), '|'  )
-            print('''                            |__________________________|______________________________|__________________________|''', '\n')
+                users_table.add_row(user[:6])
+
+            table_string = users_table.get_string()
+            print_offseted_table(table_string, 25)
+            
+            # print('''
+                  # ____________________________________________________________________________________
+                 # |____________________________________________________________________________________|
+                 # |          NAME            |           AGE                |          GENDER          |
+                 # |__________________________|______________________________|__________________________|
+                 # |                          |                              |                          |  ''')
+            # for user in users_data['users']:
+            #     print(' '*16 ,'|' + ' ' * 8 , user[0], ' ' * (15 - len(user[0])), '|' + ' ' * 10, user[1], ' ' * (17 - len(str(user[1]))), '|' + ' ' * 10, user[5], ' ' * (13 - len(str(user[5]))), '|'  )
+            # print('''                 |__________________________|______________________________|__________________________|''', '\n')
             input("                              Press Any Key To Remove Table                  ")
 
         elif user_input == '5':
@@ -149,8 +219,12 @@ def main_sys():
             new_password        =    input("         Enter Your New User Name    :   ")
             users_data['main_user'][MAIN_USER_NAME] = new_password
             prev_msgs.append("UserName updated")
-        
+
         elif user_input == '7':
+            print_diet_chart() 
+            input("                              Press Any Key To Remove Table                  ")
+        
+        elif user_input == '8':
             break
 
 def login_ui():

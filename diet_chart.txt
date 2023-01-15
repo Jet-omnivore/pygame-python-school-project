@@ -1,0 +1,8 @@
+Nutrients* Food Items* Adult Men* Adult Women* OldSter Men* Oldster Women
+Calories*            * 2000-3000KCal* 2000-2500KCal* 2000-2500KCal* 1700-1900-KCal
+Carbohydrates* Cereals and Grains* 400g* 300g* 285g* 245g 
+Proteins* Fish,meat,egg,milk&soyabean* 70g* 58g* 68g* 55g
+Fats* Butter,oil,cheese & dry fruits* 80g* 65g* 58g* 50g
+Vitamins* Sprouts,fruits, and vegetables* 0.115g* 0.109g* 0.051g* 0.048g
+Dietary fibres* Fruits,Vegetables and whole wheat barn* 30g* 30g* 20g* 17g
+Minerals* Sprouts,fruits and vegetables* 11.718g* 10.65g* 9.14g* 8.14g
